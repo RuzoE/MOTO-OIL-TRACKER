@@ -248,6 +248,17 @@ async function enviarAlertaEmail(tipo, moto, extra = {}) {
 }
 
 // ─── 5. Verificación Automática de Alertas en el Dashboard ────────────────────
+//
+// Control de duplicados EN EL CLIENTE (primera línea de defensa, sin acceso a red):
+//
+//   Clave de sesión: tipo_ciclo  donde ciclo = kmUltimoCambio
+//   → Si el km actual sube de 5.000 a 5.050 sin cambio de aceite (mismo ciclo),
+//     el Set impide llamar al backend una segunda vez.
+//   → Al registrar un nuevo cambio de aceite el kmUltimoCambio cambia, por lo que
+//     el Set permite el envío del próximo ciclo.
+//
+// El backend actúa como segunda línea de defensa (clave persistente en disco).
+//
 const _alertasEnviadasEnSesion = new Set();
 
 async function verificarYEnviarAlerta(moto) {
@@ -257,12 +268,23 @@ async function verificarYEnviarAlerta(moto) {
 
     const kmRestantes = moto.kmProximoCambio - moto.kmActual;
 
-    if (kmRestantes <= 0 && !_alertasEnviadasEnSesion.has(`urgent_${moto.kmActual}`)) {
-        _alertasEnviadasEnSesion.add(`urgent_${moto.kmActual}`);
-        await enviarAlertaEmail('urgent', moto);
-    } else if (kmRestantes > 0 && kmRestantes <= 100 && !_alertasEnviadasEnSesion.has(`warn_${moto.kmActual}`)) {
-        _alertasEnviadasEnSesion.add(`warn_${moto.kmActual}`);
-        await enviarAlertaEmail('warning', moto);
+    // cicloId = kmUltimoCambio identifica el ciclo de aceite activo
+    const cicloId = moto.kmUltimoCambio;
+
+    if (kmRestantes <= 0) {
+        // Aceite vencido — alerta urgente, una por ciclo
+        const claveUrgent = `urgent_ciclo_${cicloId}`;
+        if (!_alertasEnviadasEnSesion.has(claveUrgent)) {
+            _alertasEnviadasEnSesion.add(claveUrgent);
+            await enviarAlertaEmail('urgent', moto);
+        }
+    } else if (kmRestantes <= 100) {
+        // Próximo cambio a ≤ 100 km — alerta de advertencia, una por ciclo
+        const claveWarn = `warn_ciclo_${cicloId}`;
+        if (!_alertasEnviadasEnSesion.has(claveWarn)) {
+            _alertasEnviadasEnSesion.add(claveWarn);
+            await enviarAlertaEmail('warning', moto);
+        }
     }
 }
 

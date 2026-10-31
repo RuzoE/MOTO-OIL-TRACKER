@@ -241,10 +241,12 @@ window.guardarEvento = async function () {
     const { evento, motoActualizada } = window.Storage.agregarMantenimiento(datos);
 
     // Enviar confirmación por correo vía backend si el usuario tiene correo verificado
+    // Se pasa evento.id como cicloId para garantizar máximo una confirmación por registro real.
     if (motoActualizada) {
         window.Brevo?.enviarAlertaEmail('mantenimiento', motoActualizada, {
             titulo: evento.titulo,
             detalle: evento.detalle || `Trabajo registrado a los ${evento.km.toLocaleString()} km.`,
+            eventoId: evento.id,  // identificador único del registro → evita reenvíos duplicados
         });
 
         if (cambioAceiteRequerido) {

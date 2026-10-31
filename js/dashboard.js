@@ -251,6 +251,7 @@ window.registrarCambioHoy = function () {
     window.Brevo?.enviarAlertaEmail('mantenimiento', motoActualizada, {
         titulo: 'Cambio de Aceite Realizado',
         detalle: `Cambio de aceite registrado a los ${moto.kmActual.toLocaleString()} km. Próximo objetivo: ${nuevoProximo.toLocaleString()} km.`,
+        eventoId: `aceite_hoy_${moto.kmActual}`, // único por km al momento del cambio
     });
 
     renderDashboard();

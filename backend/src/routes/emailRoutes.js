@@ -1,5 +1,9 @@
 /**
  * emailRoutes.js — Rutas de diagnóstico, pruebas de conexión y envío de emails
+ *
+ * Control de duplicados:
+ *  - warning/urgent : clave = email:tipo:kmUltimoCambio  (un ciclo = un cambio de aceite)
+ *  - mantenimiento  : clave = email:mantenimiento:eventoId (un registro = una confirmación)
  */
 
 import { Router } from 'express';
@@ -78,7 +82,11 @@ router.post('/test', alertEmailRateLimiter, async (req, res) => {
 
 /**
  * POST /api/email/alert
- * Envía alertas de mantenimiento y cambio de aceite con control de duplicados
+ * Envía alertas de mantenimiento y cambio de aceite con control de duplicados por ciclo.
+ *
+ * Espera en el body:
+ *   email, name, token, tipo, moto (con kmUltimoCambio), extra
+ *   extra.eventoId  — obligatorio para tipo 'mantenimiento', es el id único del registro
  */
 router.post('/alert', alertEmailRateLimiter, async (req, res) => {
   const { email, name, token, tipo, moto, extra } = req.body || {};
@@ -124,17 +132,35 @@ router.post('/alert', alertEmailRateLimiter, async (req, res) => {
   const extraLimpio = {
     titulo: sanitizeText(extra?.titulo || ''),
     detalle: sanitizeText(extra?.detalle || ''),
+    eventoId: extra?.eventoId ? String(extra.eventoId) : null,
   };
 
-  // Prevención de correos duplicados para alertas automáticas basadas en odómetro
+  // ── Determinación del cicloId para el control de duplicados ──────────────────
+  // warning/urgent: se identifica por ciclo = kmUltimoCambio
+  //   → un mismo ciclo de aceite solo genera UN warning y UN urgent, sin importar
+  //     cuántas veces se recargue el dashboard o se actualice el km.
+  // mantenimiento: se identifica por el id único del evento del taller
+  //   → un mismo registro real solo genera UNA confirmación.
+  let cicloId;
   if (cleanTipo === 'warning' || cleanTipo === 'urgent') {
-    if (isDuplicateAlert(cleanEmail, cleanTipo, motoLimpia.kmActual)) {
-      return res.json({
-        ok: true,
-        duplicateIgnored: true,
-        message: 'Alerta ya enviada previamente en las últimas 24h para este kilometraje.',
+    cicloId = motoLimpia.kmUltimoCambio;
+  } else if (cleanTipo === 'mantenimiento') {
+    if (!extraLimpio.eventoId) {
+      return res.status(400).json({
+        ok: false,
+        error: 'Se requiere extra.eventoId para alertas de tipo mantenimiento.',
       });
     }
+    cicloId = extraLimpio.eventoId;
+  }
+
+  // Prevención de duplicados: comprobar si ya se envió esta alerta en este ciclo
+  if (isDuplicateAlert(cleanEmail, cleanTipo, cicloId)) {
+    return res.json({
+      ok: true,
+      duplicateIgnored: true,
+      message: `Alerta '${cleanTipo}' ya enviada para el ciclo actual. No se reenvía.`,
+    });
   }
 
   const result = await sendAlertEmail({
@@ -146,8 +172,10 @@ router.post('/alert', alertEmailRateLimiter, async (req, res) => {
   });
 
   if (result.ok) {
-    // Registrar en el historial de alertas enviadas
-    recordAlertSent(cleanEmail, cleanTipo, motoLimpia.kmActual);
+    // Registrar en el historial solo tras confirmación exitosa de Brevo
+    recordAlertSent(cleanEmail, cleanTipo, cicloId, {
+      kmActual: motoLimpia.kmActual,
+    });
 
     return res.json({
       ok: true,
@@ -155,6 +183,7 @@ router.post('/alert', alertEmailRateLimiter, async (req, res) => {
       messageId: result.messageId,
     });
   } else {
+    // No registramos como enviada → el cliente puede reintentar
     return res.status(502).json({
       ok: false,
       error: result.error,

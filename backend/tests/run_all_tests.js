@@ -144,18 +144,25 @@ async function run() {
     'Plantilla de alerta calculada con km actual, objetivo y datos reales del vehículo'
   );
 
-  // ─── 10. Prevención de Correos Duplicados ──────────────────────────────────
+  // ─── 10. Prevención de Correos Duplicados por Ciclo ────────────────────────
   console.log('\n10. Verificando prevención de alertas duplicadas...');
-  const emailDuplicado = 'alerta.duplicada@gmail.com';
-  const kmAlerta = 6100;
+  const emailDuplicado = `alerta.duplicada.${Date.now()}@gmail.com`;
+  // cicloId para alertas de aceite = kmUltimoCambio (identifica el ciclo activo)
+  const cicloIdAlerta = 4600; // km en el que se realizó el último cambio de aceite
 
-  const esDuplicadoAntes = isDuplicateAlert(emailDuplicado, 'urgent', kmAlerta);
-  recordAlertSent(emailDuplicado, 'urgent', kmAlerta);
-  const esDuplicadoDespues = isDuplicateAlert(emailDuplicado, 'urgent', kmAlerta);
+  const esDuplicadoAntes = isDuplicateAlert(emailDuplicado, 'urgent', cicloIdAlerta);
+  recordAlertSent(emailDuplicado, 'urgent', cicloIdAlerta, { kmActual: 6100 });
+  const esDuplicadoDespues = isDuplicateAlert(emailDuplicado, 'urgent', cicloIdAlerta);
+
+  // Verificar que un ciclo DIFERENTE (nuevo cambio de aceite) NO sea bloqueado
+  const cicloNuevo = 6100; // kmUltimoCambio tras registrar un nuevo cambio
+  const esDuplicadoCicloNuevo = isDuplicateAlert(emailDuplicado, 'urgent', cicloNuevo);
 
   assert(
-    esDuplicadoAntes === false && esDuplicadoDespues === true,
-    'Prevención de duplicados activa: primera alerta permitida, segunda alerta bloqueada por 24h'
+    esDuplicadoAntes === false &&     // primera vez → no duplicado → se envía
+    esDuplicadoDespues === true &&    // mismo ciclo → duplicado → se bloquea
+    esDuplicadoCicloNuevo === false,  // nuevo ciclo → no duplicado → se envía
+    'Prevención de duplicados por ciclo: bloqueada en mismo ciclo, habilitada en nuevo ciclo'
   );
 
   // ─── 11. Protección de la API Key ──────────────────────────────────────────

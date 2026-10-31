@@ -1,6 +1,14 @@
 /**
  * db.js — Almacén persistente seguro para verificación de correos y control de duplicados
  * Utiliza hashes criptográficos SHA-256 con salt para proteger los códigos.
+ *
+ * Clave de alerta: email:tipo:cicloId
+ *   - cicloId para warning/urgent = kmUltimoCambio (identifica el ciclo de aceite activo)
+ *   - cicloId para mantenimiento  = id único del registro (evento.id de Storage)
+ * Esto garantiza:
+ *   - Una sola alerta por tipo por CICLO, no por km puntual.
+ *   - Que al iniciar un nuevo ciclo (cambio de aceite) las alertas se rehabiliten.
+ *   - Que recargar la página, navegar o actualizar km no dispare duplicados.
  */
 
 import fs from 'fs';
@@ -250,33 +258,42 @@ export function getEmailStatus(email) {
 }
 
 /**
- * Previene el envío de alertas duplicadas
+ * Previene el envío de alertas duplicadas por ciclo de mantenimiento.
+ *
+ * Para alertas de aceite (warning/urgent): el cicloId es el kmUltimoCambio,
+ * que identifica unívocamente el ciclo activo. Al registrar un nuevo cambio de
+ * aceite el kmUltimoCambio cambia, lo que habilita un nuevo ciclo de alertas.
+ *
+ * Para alertas de mantenimiento/taller: el cicloId es el id único del evento
+ * (timestamp de creación), de modo que cada registro real genera como máximo
+ * una confirmación por correo.
+ *
  * @param {string} email
- * @param {string} alertType
- * @param {number} kmActual
- * @returns {boolean} true si ya fue enviada una alerta idéntica recientemente
+ * @param {string} alertType - 'warning' | 'urgent' | 'mantenimiento'
+ * @param {string|number} cicloId - kmUltimoCambio para aceite, event.id para taller
+ * @returns {boolean} true si la alerta ya fue enviada para este ciclo y tipo
  */
-export function isDuplicateAlert(email, alertType, kmActual) {
-  const alertKey = `${email}:${alertType}:${kmActual}`;
+export function isDuplicateAlert(email, alertType, cicloId) {
+  const alertKey = `${email}:${alertType}:${cicloId}`;
   const record = db.sentAlerts[alertKey];
-
-  if (!record) return false;
-
-  // Si se envió hace menos de 24 horas para este mismo kilometraje y tipo
-  const now = Date.now();
-  const hoursSince = (now - record.sentAt) / (1000 * 60 * 60);
-  return hoursSince < 24;
+  return Boolean(record);
 }
 
 /**
- * Registra que una alerta fue enviada exitosamente
+ * Registra que una alerta fue enviada exitosamente para un ciclo concreto.
+ *
+ * @param {string} email
+ * @param {string} alertType
+ * @param {string|number} cicloId - kmUltimoCambio para aceite, event.id para taller
+ * @param {Object} [meta] - Datos adicionales opcionales para el log (km actual, etc.)
  */
-export function recordAlertSent(email, alertType, kmActual) {
-  const alertKey = `${email}:${alertType}:${kmActual}`;
+export function recordAlertSent(email, alertType, cicloId, meta = {}) {
+  const alertKey = `${email}:${alertType}:${cicloId}`;
   db.sentAlerts[alertKey] = {
     sentAt: Date.now(),
-    kmActual,
+    cicloId,
     tipo: alertType,
+    ...meta,
   };
 
   // Limpiar alertas con más de 30 días para mantener el archivo ligero

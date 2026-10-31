@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f97316" />
+  <meta name="description" content="Registra tu motocicleta en MotoTracker para empezar a controlar el cambio de aceite." />
+  <title>Registro — MotoTracker</title>
+  <link rel="manifest" href="../manifest.json" />
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/registro.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <!-- Hero -->
+    <div class="registro-hero">
+      <div class="glow-orange"></div>
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/>
+          <path d="M5.5 17.5H2V6h1l5 7h9l3-4h1v8.5"/><path d="M9 13l-2.5-3.5"/>
+        </svg>
+      </div>
+      <h1 class="hero-title">Registra tu Moto</h1>
+      <p class="hero-subtitle">Configura tu motocicleta en 3 pasos para empezar el seguimiento</p>
+    </div>
+
+    <!-- Stepper -->
+    <div class="step-indicator">
+      <div class="step-dot active" data-step="1">1</div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3">3</div>
+    </div>
+
+    <!-- ── Paso 1: Datos de la moto ── -->
+    <div class="step-section active" id="step-1">
+      <p class="step-title">📋 Datos de tu motocicleta</p>
+      <p class="step-subtitle">Información básica para identificar tu moto</p>
+
+      <div class="form-group">
+        <label class="form-label" for="campo-marca">Marca</label>
+        <input type="text" id="campo-marca" class="form-control" placeholder="ej. Bajaj, Honda, Yamaha" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="campo-modelo">Modelo</label>
+        <input type="text" id="campo-modelo" class="form-control" placeholder="ej. Pulsar NS160" autocomplete="off" />
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="campo-anio">Año</label>
+          <input type="number" id="campo-anio" class="form-control" placeholder="2022" min="1980" max="2030" inputmode="numeric" />
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="campo-cilindraje">Cilindraje (cc)</label>
+          <input type="number" id="campo-cilindraje" class="form-control" placeholder="160" min="50" max="2000" inputmode="numeric" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Paso 2: Kilometraje e intervalo ── -->
+    <div class="step-section" id="step-2">
+      <p class="step-title">🛢️ Intervalo de cambio de aceite</p>
+      <p class="step-subtitle">¿Cada cuántos km cambias el aceite?</p>
+
+      <div class="interval-grid">
+        <button class="interval-btn" data-km="1000">
+          <span class="interval-km">1.000</span>
+          <span class="interval-unit">km</span>
+        </button>
+        <button class="interval-btn selected" data-km="1500">
+          <span class="interval-km">1.500</span>
+          <span class="interval-unit">km (recomendado)</span>
+        </button>
+        <button class="interval-btn" data-km="2000">
+          <span class="interval-km">2.000</span>
+          <span class="interval-unit">km</span>
+        </button>
+        <button class="interval-btn" data-km="2500">
+          <span class="interval-km">2.500</span>
+          <span class="interval-unit">km</span>
+        </button>
+        <button class="interval-btn" data-km="3000">
+          <span class="interval-km">3.000</span>
+          <span class="interval-unit">km</span>
+        </button>
+        <button class="interval-btn" data-km="5000">
+          <span class="interval-km">5.000</span>
+          <span class="interval-unit">km</span>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="campo-intervalo-custom">Intervalo personalizado (km)</label>
+        <input type="number" id="campo-intervalo-custom" class="form-control" value="1500" min="500" max="10000" step="100" inputmode="numeric" />
+        <p class="form-hint">Puedes escribir cualquier intervalo</p>
+      </div>
+
+      <div class="divider-label">Kilometraje actual del odómetro</div>
+
+      <div class="form-group">
+        <label class="form-label" for="campo-km">Kilometraje actual</label>
+        <div class="km-input-wrapper">
+          <input type="number" id="campo-km" class="form-control" placeholder="ej. 5.200" min="0" inputmode="numeric"
+            style="font-family:var(--font-mono);font-size:1.3rem;font-weight:700;text-align:center;padding-right:3.5rem;" />
+          <span class="km-unit-badge">km</span>
+        </div>
+      </div>
+
+      <!-- Zona de foto -->
+      <p class="form-label" style="margin-bottom:.5rem;">O toma una foto del odómetro</p>
+      <div class="photo-zone" id="photo-zone">
+        <div class="photo-zone-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <p><strong>Toca para abrir cámara</strong></p>
+        <p>El OCR detectará el número automáticamente</p>
+
+        <div id="preview-container" style="margin-top:.75rem;position:relative;">
+          <img id="preview-img" alt="Vista previa del odómetro" />
+          <div class="ocr-overlay" id="ocr-overlay">
+            <div class="spinner"></div>
+            <div>
+              <p class="ocr-progress-text" style="font-size:.82rem;">Iniciando OCR...</p>
+              <div style="width:140px;height:4px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;margin-top:.4rem;">
+                <div class="ocr-progress-bar" style="height:100%;width:0%;background:var(--accent-orange);border-radius:4px;transition:width .1s;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem;">
+        <button class="btn btn-outline" id="btn-camara" style="font-size:.85rem;padding:.7rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Cámara
+        </button>
+        <button class="btn btn-outline" id="btn-galeria" style="font-size:.85rem;padding:.7rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Galería
+        </button>
+      </div>
+      <input type="file" id="file-input" accept="image/*" />
+    </div>
+
+    <!-- ── Paso 3: Confirmar ── -->
+    <div class="step-section" id="step-3">
+      <p class="step-title">✅ Confirma los datos</p>
+      <p class="step-subtitle">Revisa la información antes de guardar</p>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="label">Moto</span>
+          <span class="value" id="res-marca">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Año</span>
+          <span class="value" id="res-anio">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Cilindraje</span>
+          <span class="value" id="res-cilin">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Km actual</span>
+          <span class="value" id="res-km">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Intervalo</span>
+          <span class="value" id="res-intervalo">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Próximo cambio</span>
+          <span class="value text-accent" id="res-proximo">—</span>
+        </div>
+      </div>
+
+      <p class="form-hint text-center">El sistema calculará automáticamente cuando debes hacer el próximo cambio de aceite.</p>
+    </div>
+
+    <!-- Navegación -->
+    <div class="step-nav" style="padding:0 1rem 1.5rem;">
+      <button class="btn btn-outline" id="btn-prev" style="display:none;">← Atrás</button>
+      <button class="btn btn-primary" id="btn-next">
+        Siguiente →
+      </button>
+    </div>
+
+  </div><!-- /page-wrapper -->
+
+  <div id="toast-container"></div>
+
+  <!-- Scripts: CDN de Tesseract + módulos locales -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/ocr.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    // Toast helper global
+    window.showToast = function(msg, tipo='info') {
+      const c = document.getElementById('toast-container');
+      if(!c) return;
+      const t = document.createElement('div');
+      t.className = `toast toast-${tipo}`;
+      t.innerHTML = `<span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3800);
+    };
+  </script>
+  <script src="../js/registro.js"></script>
+</body>
+</html>

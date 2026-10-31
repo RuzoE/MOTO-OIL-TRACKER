@@ -1,0 +1,25 @@
+# Variables de entorno con credenciales sensibles
+.env
+.env.local
+.env.production
+
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Almacenamiento local persistente
+data/
+*.db
+*.sqlite
+
+# Logs del sistema
+logs/
+*.log
+
+# Archivos del sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

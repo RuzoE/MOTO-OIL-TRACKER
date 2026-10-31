@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f97316" />
+    <meta name="description"
+        content="Ajustes de motocicleta, intervalos de cambio de aceite, notificaciones Push y alertas por correo en MotoTracker." />
+    <title>Configuración — MotoTracker</title>
+    <link rel="manifest" href="../manifest.json" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/configuracion.css" />
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="main-content">
+
+            <!-- Header -->
+            <div class="config-header">
+                <div>
+                    <h1>Ajustes</h1>
+                    <p>Configuración del sistema y notificaciones</p>
+                </div>
+                <a href="dashboard.html" class="btn-ghost" title="Volver al Dashboard" style="display:flex;align-items:center;gap:0.3rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    <span>Volver</span>
+                </a>
+            </div>
+
+            <div class="config-container">
+
+                <!-- ── 1. Parámetros de la Motocicleta ── -->
+                <div class="config-card">
+                    <div class="config-card-header">
+                        <div class="config-card-icon orange">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/>
+                                <path d="M5.5 17.5H2V6h1l5 7h9l3-4h1v8.5"/><path d="M9 13l-2.5-3.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="config-card-title">Mi Motocicleta</h2>
+                            <p class="config-card-sub">Especificaciones del vehículo e intervalo</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-marca">Marca</label>
+                        <input type="text" id="cfg-marca" class="form-control" placeholder="ej. Bajaj, Yamaha, Honda" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-modelo">Modelo</label>
+                        <input type="text" id="cfg-modelo" class="form-control" placeholder="ej. Pulsar NS160" />
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+                        <div class="form-group">
+                            <label class="form-label" for="cfg-anio">Año</label>
+                            <input type="number" id="cfg-anio" class="form-control" placeholder="2023" inputmode="numeric" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cfg-cilindraje">Cilindraje (cc)</label>
+                            <input type="number" id="cfg-cilindraje" class="form-control" placeholder="160" inputmode="numeric" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-km-actual">Kilometraje actual de ajuste</label>
+                        <input type="number" id="cfg-km-actual" class="form-control" inputmode="numeric"
+                            style="font-family:var(--font-mono);font-weight:700;" />
+                        <p class="form-hint">Permite calibrar el odómetro si hubo un error de captura.</p>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Intervalo de aceite -->
+                    <label class="form-label" style="margin-bottom:0.4rem;display:block;">Intervalo de cambio de aceite</label>
+                    <div class="interval-grid">
+                        <button class="interval-btn" data-km="1000">
+                            <span class="interval-km">1.000</span>
+                            <span class="interval-unit">km</span>
+                        </button>
+                        <button class="interval-btn selected" data-km="1500">
+                            <span class="interval-km">1.500</span>
+                            <span class="interval-unit">km (recom.)</span>
+                        </button>
+                        <button class="interval-btn" data-km="2000">
+                            <span class="interval-km">2.000</span>
+                            <span class="interval-unit">km</span>
+                        </button>
+                        <button class="interval-btn" data-km="2500">
+                            <span class="interval-km">2.500</span>
+                            <span class="interval-unit">km</span>
+                        </button>
+                        <button class="interval-btn" data-km="3000">
+                            <span class="interval-km">3.000</span>
+                            <span class="interval-unit">km</span>
+                        </button>
+                        <button class="interval-btn" data-km="5000">
+                            <span class="interval-km">5.000</span>
+                            <span class="interval-unit">km</span>
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-intervalo-custom">Intervalo manual (km)</label>
+                        <input type="number" id="cfg-intervalo-custom" class="form-control" value="1500" min="500" max="15000" step="100" inputmode="numeric" />
+                    </div>
+
+                    <button class="btn btn-primary" onclick="guardarMotoConfig()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                        Guardar Cambios de Moto
+                    </button>
+                </div>
+
+                <!-- ── 2. Alertas por Correo Electrónico (Brevo Centralizado) ── -->
+                <div class="config-card">
+                    <div class="config-card-header">
+                        <div class="config-card-icon blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="config-card-title">Alertas por Correo Electrónico</h2>
+                            <p class="config-card-sub">Notificaciones de mantenimiento automáticas vía Brevo</p>
+                        </div>
+                    </div>
+
+                    <!-- Indicador visual de conexión del servicio -->
+                    <div class="backend-status-pill">
+                        <div class="status-indicator-wrap">
+                            <div class="status-dot" id="server-status-dot"></div>
+                            <span id="server-status-text" style="font-weight:600;">Comprobando servidor...</span>
+                        </div>
+                        <span id="server-sender-badge" class="badge" style="font-size:0.65rem;">Moto Oil Tracker</span>
+                    </div>
+
+                    <!-- Banner de Estado de Verificación del Correo -->
+                    <div class="email-verification-banner" id="email-verification-banner">
+                        <div>
+                            <div class="email-banner-text" id="email-banner-status">Estado del correo</div>
+                            <div class="email-banner-sub" id="email-banner-detail">Ingresa tu correo para recibir alertas</div>
+                        </div>
+                        <span id="email-status-badge" class="badge">Sin configurar</span>
+                    </div>
+
+                    <!-- Campo 1: Correo electrónico personal -->
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-email-usuario">Correo Electrónico Personal</label>
+                        <input type="email" id="cfg-email-usuario" class="form-control" placeholder="ej. piloto@gmail.com" autocomplete="email" />
+                        <p class="form-hint">Aquí recibirás los avisos de vencimiento de aceite y taller.</p>
+                    </div>
+
+                    <!-- Campo 2: Nombre del usuario -->
+                    <div class="form-group">
+                        <label class="form-label" for="cfg-nombre-usuario">Nombre del Destinatario</label>
+                        <input type="text" id="cfg-nombre-usuario" class="form-control" placeholder="ej. Juan Pérez" autocomplete="name" />
+                    </div>
+
+                    <!-- Botonera de acciones -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+                        <button class="btn btn-outline" id="btn-guardar-email" onclick="guardarDatosEmail()">
+                            Guardar Correo
+                        </button>
+                        <button class="btn btn-outline" id="btn-verificar-email" onclick="iniciarVerificacionEmail()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            Verificar Correo
+                        </button>
+                    </div>
+
+                    <button class="btn btn-primary" id="btn-test-email" onclick="probarEnvioEmail()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                        Probar Envío de Correo
+                    </button>
+                </div>
+
+                <!-- ── 3. Web Push Notifications ── -->
+                <div class="config-card">
+                    <div class="config-card-header">
+                        <div class="config-card-icon green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="config-card-title">Notificaciones Push (Navegador)</h2>
+                            <p class="config-card-sub">Alertas directas en la pantalla de tu dispositivo</p>
+                        </div>
+                    </div>
+
+                    <div class="setting-status-row">
+                        <div>
+                            <div class="setting-label">Estado en este dispositivo</div>
+                            <div class="setting-desc">Notificaciones flotantes cuando estés usando la aplicación</div>
+                        </div>
+                        <span id="notif-status-badge" class="badge badge-yellow">Verificando...</span>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1rem;">
+                        <button class="btn btn-outline" id="btn-activar-notif" onclick="activarNotificacionesUI()">
+                            Activar Push
+                        </button>
+                        <button class="btn btn-outline" onclick="probarNotificacionPush()">
+                            Probar Push 🔔
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── 4. Copia de Seguridad & Mantenimiento ── -->
+                <div class="config-card">
+                    <div class="config-card-header">
+                        <div class="config-card-icon blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="config-card-title">Copia de Seguridad</h2>
+                            <p class="config-card-sub">Exportar o restaurar tu bitácora</p>
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.9rem;">
+                        Tus datos se almacenan en la memoria local de tu dispositivo. Descarga una copia periódicamente para no perder tu historial.
+                    </p>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+                        <button class="btn btn-outline" onclick="exportarRespaldo()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Exportar JSON
+                        </button>
+                        <button class="btn btn-outline" onclick="document.getElementById('import-file-input').click()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Restaurar
+                        </button>
+                    </div>
+                    <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="importarRespaldo(event)" />
+                </div>
+
+                <!-- ── 5. Zona de Peligro ── -->
+                <div class="config-card danger-zone">
+                    <div class="config-card-header" style="border-bottom-color:rgba(239,68,68,0.2);">
+                        <div class="config-card-icon red">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="config-card-title" style="color:var(--accent-red)">Zona de Peligro</h2>
+                            <p class="config-card-sub">Eliminación completa de registros</p>
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">
+                        Esta acción borrará la motocicleta registrada, todo el historial de odómetro y mantenimientos de taller.
+                    </p>
+
+                    <button class="btn btn-danger" onclick="reiniciarDatosApp()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+                        Restablecer Todo a Cero
+                    </button>
+                </div>
+
+            </div><!-- /config-container -->
+
+        </div><!-- /main-content -->
+
+        <!-- Navegación inferior -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span class="nav-label">Inicio</span>
+            </a>
+            <a href="mantenimiento.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                </svg>
+                <span class="nav-label">Taller</span>
+            </a>
+            <a href="configuracion.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M17.66 17.66l-1.41-1.41M6.34 17.66l1.41-1.41" />
+                </svg>
+                <span class="nav-label">Config</span>
+            </a>
+        </nav>
+
+    </div><!-- /page-wrapper -->
+
+    <!-- Modal: Ingreso de Código de Verificación de 6 Dígitos -->
+    <div class="modal-overlay" id="modal-codigo-verificacion" onclick="if(event.target===this)cerrarModalCodigo()">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">🔐 Código de Verificación</h3>
+                <button class="modal-close" onclick="cerrarModalCodigo()">✕</button>
+            </div>
+
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">
+                Enviamos un código de seis dígitos a <strong id="modal-destinatario-email" style="color:var(--text-primary);">...</strong>. Revisa tu bandeja de entrada o spam.
+            </p>
+
+            <div class="verification-code-box">
+                <input
+                    type="text"
+                    id="input-codigo-6"
+                    class="code-input-six"
+                    placeholder="123456"
+                    maxlength="6"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                />
+                <div class="code-timer-row">
+                    <span id="timer-cuenta-regresiva">⏱️ Expira en: 10:00</span>
+                    <button type="button" class="btn-resend-code" id="btn-reenviar-codigo" onclick="reenviarCodigoVerificacion()" disabled>
+                        Reenviar código
+                    </button>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1.25rem;">
+                <button class="btn btn-outline" onclick="cerrarModalCodigo()">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirmar-codigo" onclick="confirmarCodigoVerificacion()">
+                    Confirmar Código
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/brevo.js"></script>
+    <script>
+        window.showToast = function (msg, tipo = 'info') {
+            const c = document.getElementById('toast-container');
+            if (!c) return;
+            const t = document.createElement('div');
+            t.className = `toast toast-${tipo}`;
+            t.innerHTML = `<span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3800);
+        };
+    </script>
+    <script src="../js/configuracion.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,315 @@
+/* ============================================================
+   registro.css — Estilos para el Onboarding / Registro inicial
+   ============================================================ */
+
+/* ─── Hero de bienvenida ────────────────────────────────────── */
+.registro-hero {
+    position: relative;
+    padding: 2.5rem 1rem 1.5rem;
+    text-align: center;
+    overflow: hidden;
+}
+
+.registro-hero .glow-orange {
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 280px;
+}
+
+.hero-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.4), 0 8px 32px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-icon svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+.hero-title {
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 40%, var(--accent-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+}
+
+.hero-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+/* ─── Stepper (pasos) ───────────────────────────────────────── */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 1rem 1rem 0.5rem;
+}
+
+.step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: all var(--transition-base);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.step-dot.active {
+    border-color: var(--accent-orange);
+    background: var(--accent-orange);
+    color: white;
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.5);
+}
+
+.step-dot.completed {
+    border-color: var(--accent-green);
+    background: var(--accent-green);
+    color: white;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-color);
+    transition: background var(--transition-base);
+    max-width: 40px;
+}
+
+.step-line.completed {
+    background: var(--accent-green);
+}
+
+/* ─── Sección de Steps ──────────────────────────────────────── */
+.step-section {
+    display: none;
+    padding: 0.75rem 1rem 1.5rem;
+    animation: fadeIn 0.25s ease;
+}
+
+.step-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.step-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+}
+
+/* ─── Selector de intervalo ─────────────────────────────────── */
+.interval-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.interval-btn {
+    background: var(--bg-elevated);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.8rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.interval-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+}
+
+.interval-btn.selected {
+    border-color: var(--accent-orange);
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--accent-orange);
+}
+
+.interval-km {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    display: block;
+}
+
+.interval-unit {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* ─── OCR / Foto del odómetro ───────────────────────────────── */
+.photo-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-elevated);
+}
+
+.photo-zone:hover {
+    border-color: var(--accent-orange);
+    background: rgba(249, 115, 22, 0.05);
+}
+
+.photo-zone.dragover {
+    border-color: var(--accent-orange);
+    background: rgba(249, 115, 22, 0.1);
+}
+
+.photo-zone-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.75rem;
+    color: var(--accent-orange);
+    opacity: 0.7;
+}
+
+.photo-zone-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.photo-zone p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.photo-zone strong {
+    color: var(--accent-orange);
+}
+
+#preview-container {
+    margin-top: 0.75rem;
+    position: relative;
+}
+
+#preview-img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    max-height: 180px;
+    object-fit: cover;
+    display: none;
+}
+
+.ocr-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 0.85rem;
+    display: none;
+}
+
+.ocr-overlay.active {
+    display: flex;
+}
+
+/* ─── Resumen de registro ────────────────────────────────────── */
+.summary-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.88rem;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row .label {
+    color: var(--text-muted);
+}
+
+.summary-row .value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+/* ─── Botones de navegación en el formulario ─────────────────── */
+.step-nav {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+}
+
+.step-nav .btn {
+    flex: 1;
+}
+
+/* ─── Input file oculto ─────────────────────────────────────── */
+#file-input {
+    display: none;
+}

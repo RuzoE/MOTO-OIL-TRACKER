@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f97316" />
+  <meta name="description" content="MotoTracker — Control de cambio de aceite y mantenimiento preventivo para tu motocicleta." />
+  <title>MotoTracker · Control de Aceite</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="https://api.iconify.design/mdi/motorbike.svg?color=%23f97316&width=180" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <style>
+    body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+    .splash-wrap { text-align:center; animation: fadeUp 0.5s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .splash-icon { width:96px; height:96px; background:var(--gradient-primary); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; box-shadow:0 0 60px rgba(249,115,22,.35); }
+    .splash-icon svg { width:48px; height:48px; color:white; }
+    .splash-title { font-size:2rem; font-weight:900; background:linear-gradient(135deg,#fff 40%,var(--accent-orange)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:-0.03em; margin-bottom:.4rem; }
+    .splash-sub { color:var(--text-muted); font-size:.9rem; margin-bottom:2rem; }
+    .splash-dot { width:8px; height:8px; background:var(--accent-orange); border-radius:50%; margin:0 auto; animation:pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
+  </style>
+</head>
+<body>
+  <div class="splash-wrap">
+    <div class="splash-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="5.5" cy="17.5" r="2.5"/>
+        <circle cx="18.5" cy="17.5" r="2.5"/>
+        <path d="M5.5 17.5H2V6h1l5 7h9l3-4h1v8.5"/>
+        <path d="M9 13l-2.5-3.5"/>
+      </svg>
+    </div>
+    <h1 class="splash-title">MotoTracker</h1>
+    <p class="splash-sub">Control de aceite y mantenimiento preventivo</p>
+    <div class="splash-dot"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="./js/storage.js"></script>
+  <script>
+    // Redirigir según estado
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        if (window.Storage?.estaRegistrada()) {
+          window.location.replace('./html/dashboard.html');
+        } else {
+          window.location.replace('./html/registro.html');
+        }
+      }, 1400);
+    });
+
+    // Toast helper global
+    window.showToast = function(msg, tipo='info') {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = `toast toast-${tipo}`;
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3800);
+    };
+  </script>
+</body>
+</html>

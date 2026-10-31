@@ -1,0 +1,544 @@
+/* ============================================================
+   dashboard.css — Panel principal del MotoTracker
+   ============================================================ */
+
+/* ─── Header del Dashboard ──────────────────────────────────── */
+.dash-header {
+    padding: 1.25rem 1rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dash-header-left h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.1rem;
+}
+
+.dash-header-left p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.dash-avatar {
+    width: 42px;
+    height: 42px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-orange);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.dash-avatar:hover {
+    transform: scale(1.05);
+}
+
+.dash-avatar svg {
+    width: 22px;
+    height: 22px;
+    color: white;
+}
+
+/* ─── Tarjeta principal del odómetro ────────────────────────── */
+.odometer-card {
+    margin: 0.75rem 1rem;
+    background: var(--gradient-card);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-orange);
+}
+
+.odometer-card::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.odo-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.odo-value {
+    font-family: var(--font-mono);
+    font-size: clamp(2.4rem, 10vw, 3rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.odo-unit {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent-orange);
+    font-weight: 400;
+}
+
+.odo-moto-name {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+}
+
+/* ─── Barra de progreso de aceite ───────────────────────────── */
+.oil-progress-section {
+    margin-bottom: 0;
+}
+
+.oil-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.6rem;
+}
+
+.oil-meta-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.oil-meta-pct {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: color var(--transition-base);
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    to {
+        left: 200%;
+    }
+}
+
+/* Colores de la barra según porcentaje */
+.progress-bar-fill.good {
+    background: linear-gradient(90deg, var(--accent-green), #4ade80);
+}
+
+.progress-bar-fill.mid {
+    background: linear-gradient(90deg, var(--accent-yellow), #facc15);
+}
+
+.progress-bar-fill.low {
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-amber));
+}
+
+.progress-bar-fill.danger {
+    background: linear-gradient(90deg, var(--accent-red), #f87171);
+}
+
+.oil-km-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.oil-km-info span strong {
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+
+/* ─── Alert banner ──────────────────────────────────────────── */
+.alert-banner {
+    margin: 0 1rem 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    animation: pulse-border 2.5s infinite;
+    display: none;
+}
+
+.alert-banner.visible {
+    display: flex;
+}
+
+.alert-banner svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.alert-banner.danger-alert {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: var(--accent-red);
+}
+
+.alert-banner.warn-alert {
+    background: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: var(--accent-yellow);
+}
+
+@keyframes pulse-border {
+
+    0%,
+    100% {
+        border-color: currentColor;
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* ─── Grid de estadísticas ──────────────────────────────────── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin: 0 1rem 0.75rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: transform var(--transition-fast);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+}
+
+.stat-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.stat-icon.orange {
+    background: rgba(249, 115, 22, 0.15);
+    color: var(--accent-orange);
+}
+
+.stat-icon.green {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--accent-green);
+}
+
+.stat-icon.blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+}
+
+.stat-icon.yellow {
+    background: rgba(234, 179, 8, 0.15);
+    color: var(--accent-yellow);
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ─── Sección de acciones rápidas ───────────────────────────── */
+.quick-actions {
+    padding: 0 1rem 0.75rem;
+}
+
+.section-title-sm {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+}
+
+.action-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: left;
+    width: 100%;
+}
+
+.action-btn:hover {
+    border-color: var(--accent-orange);
+    background: rgba(249, 115, 22, 0.05);
+    transform: translateY(-2px);
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+}
+
+.action-btn.full-width {
+    grid-column: 1 / -1;
+    flex-direction: row;
+}
+
+.action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.action-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.action-icon.orange {
+    background: rgba(249, 115, 22, 0.2);
+    color: var(--accent-orange);
+}
+
+.action-icon.green {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--accent-green);
+}
+
+.action-icon.blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--accent-blue);
+}
+
+.action-icon.yellow {
+    background: rgba(234, 179, 8, 0.2);
+    color: var(--accent-yellow);
+}
+
+.action-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.action-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* ─── Estimador de fecha ────────────────────────────────────── */
+.estimator-card {
+    margin: 0 1rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+}
+
+.estimator-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+}
+
+.estimator-row:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.estimator-row .k {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.estimator-row .v {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+/* ─── Modal: Actualizar kilometraje ─────────────────────────── */
+.km-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.km-input-wrapper .form-control {
+    padding-right: 3.5rem;
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.km-unit-badge {
+    position: absolute;
+    right: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* ─── Historial reciente (mini) ─────────────────────────────── */
+.recent-list {
+    padding: 0 1rem;
+    margin-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+.recent-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.recent-item:last-child {
+    border-bottom: none;
+}
+
+.recent-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.recent-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.recent-info {
+    flex: 1;
+}
+
+.recent-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.recent-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.recent-km {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+/* ─── Estado vacío ──────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-state svg {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.75rem;
+    opacity: 0.4;
+}
+
+.empty-state p {
+    font-size: 0.88rem;
+}
+
+/* ─── Padding inferior para bottom nav ─────────────────────── */
+.main-content {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}

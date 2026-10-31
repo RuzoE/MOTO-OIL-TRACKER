@@ -1,0 +1,27 @@
+{
+  "name": "MotoTracker - Control de Aceite",
+  "short_name": "MotoTracker",
+  "description": "Aplicación PWA para el control de cambio de aceite y mantenimiento preventivo de motocicletas.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0d0f",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://api.iconify.design/mdi/motorbike.svg?color=%23f97316&width=192&height=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.iconify.design/mdi/motorbike.svg?color=%23f97316&width=512&height=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "es",
+  "dir": "ltr"
+}

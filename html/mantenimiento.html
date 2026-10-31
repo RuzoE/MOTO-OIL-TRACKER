@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f97316" />
+    <meta name="description" content="Bitácora de mantenimientos y taller para tu motocicleta — MotoTracker." />
+    <title>Taller — MotoTracker</title>
+    <link rel="manifest" href="../manifest.json" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/mantenimiento.css" />
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="main-content">
+
+            <!-- Header -->
+            <div class="mant-header">
+                <div>
+                    <h1>Bitácora de Taller</h1>
+                    <p>Registro de mantenimientos y eventos</p>
+                </div>
+                <button class="btn-add-fab" onclick="abrirModalNuevo()" title="Nuevo mantenimiento" id="btn-nuevo-fab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Stats rápidas -->
+            <div class="mant-stats">
+                <div class="mant-stat">
+                    <div class="mant-stat-value" id="stat-total">0</div>
+                    <div class="mant-stat-label">Total eventos</div>
+                </div>
+                <div class="mant-stat">
+                    <div class="mant-stat-value" id="stat-aceites" style="color:var(--accent-orange)">0</div>
+                    <div class="mant-stat-label">Cambios aceite</div>
+                </div>
+                <div class="mant-stat">
+                    <div class="mant-stat-value" id="stat-fallas" style="color:var(--accent-red)">0</div>
+                    <div class="mant-stat-label">Fallas</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filter-chips">
+                <button class="chip active" data-filtro="todos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:13px;height:13px;">
+                        <line x1="8" y1="6" x2="21" y2="6" />
+                        <line x1="8" y1="12" x2="21" y2="12" />
+                        <line x1="8" y1="18" x2="21" y2="18" />
+                        <line x1="3" y1="6" x2="3.01" y2="6" />
+                        <line x1="3" y1="12" x2="3.01" y2="12" />
+                        <line x1="3" y1="18" x2="3.01" y2="18" />
+                    </svg>
+                    Todos
+                </button>
+                <button class="chip" data-filtro="aceite">🛢 Cambio Aceite</button>
+                <button class="chip" data-filtro="falla">⚠️ Fallas</button>
+                <button class="chip" data-filtro="servicio">🔧 Servicio</button>
+                <button class="chip" data-filtro="otro">📋 Otro</button>
+            </div>
+
+            <!-- Lista de eventos -->
+            <div class="events-list" id="eventos-lista">
+                <!-- Generado por JS -->
+            </div>
+
+        </div><!-- /main-content -->
+
+        <!-- Navegación inferior -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span class="nav-label">Inicio</span>
+            </a>
+            <a href="mantenimiento.html" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                </svg>
+                <span class="nav-label">Taller</span>
+            </a>
+            <a href="configuracion.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M17.66 17.66l-1.41-1.41M6.34 17.66l1.41-1.41" />
+                </svg>
+                <span class="nav-label">Config</span>
+            </a>
+        </nav>
+
+    </div><!-- /page-wrapper -->
+
+    <!-- Modal: Nuevo evento de mantenimiento -->
+    <div class="modal-overlay" id="modal-nuevo-evento" onclick="if(event.target===this)cerrarModalNuevo()">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">🔧 Nuevo Evento</h3>
+                <button class="modal-close" onclick="cerrarModalNuevo()">✕</button>
+            </div>
+
+            <!-- Tipo de evento -->
+            <p class="form-label" style="margin-bottom:.5rem;">Tipo de evento</p>
+            <div class="tipo-selector">
+                <button class="tipo-btn" data-tipo="aceite">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L8 9H4l8 13 8-13h-4L12 2z" />
+                    </svg>
+                    Cambio Aceite
+                </button>
+                <button class="tipo-btn" data-tipo="falla">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    Falla Mecánica
+                </button>
+                <button class="tipo-btn selected" data-tipo="servicio">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2" />
+                    </svg>
+                    Servicio Taller
+                </button>
+                <button class="tipo-btn" data-tipo="otro">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
+                    </svg>
+                    Otro
+                </button>
+            </div>
+
+            <!-- Toggle: ¿Requirió cambio de aceite? -->
+            <div class="toggle-section" id="toggle-cambio-aceite">
+                <div class="toggle-info">
+                    <span class="toggle-label">🛢️ ¿Requirió cambio de aceite?</span>
+                    <span class="toggle-sub">Recalculará el próximo objetivo inmediatamente</span>
+                </div>
+                <div class="toggle-switch" id="toggle-switch"></div>
+            </div>
+
+            <!-- Banner de recalculo -->
+            <div class="recalc-banner" id="recalc-banner">
+                <!-- Generado por JS -->
+            </div>
+
+            <!-- Campos del formulario -->
+            <div class="form-group">
+                <label class="form-label" for="campo-titulo">Título del evento</label>
+                <input type="text" id="campo-titulo" class="form-control" placeholder="ej. Revisión de frenos"
+                    autocomplete="off" />
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="campo-evt-km">Kilometraje</label>
+                    <input type="number" id="campo-evt-km" class="form-control" inputmode="numeric"
+                        style="font-family:var(--font-mono);font-weight:700;" />
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="campo-fecha">Fecha</label>
+                    <input type="date" id="campo-fecha" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem;">
+                <label class="form-label" for="campo-detalle">Detalle / descripción</label>
+                <textarea id="campo-detalle" class="form-control" rows="3"
+                    placeholder="Describe el trabajo realizado, piezas cambiadas, observaciones..."
+                    style="resize:vertical;min-height:72px;"></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.25rem;">
+                <button class="btn btn-outline" onclick="cerrarModalNuevo()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarEvento()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        style="width:18px;height:18px;">
+                        <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/brevo.js"></script>
+    <script>
+        window.showToast = function (msg, tipo = 'info') {
+            const c = document.getElementById('toast-container');
+            if (!c) return;
+            const t = document.createElement('div');
+            t.className = `toast toast-${tipo}`;
+            t.innerHTML = `<span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3800);
+        };
+    </script>
+    <script src="../js/mantenimiento.js"></script>
+</body>
+
+</html>

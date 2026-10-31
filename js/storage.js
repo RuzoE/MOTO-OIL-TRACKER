@@ -276,9 +276,11 @@ function obtenerConfig() {
         verificationToken: raw.verificationToken || '',
         fechaVerificacion: raw.fechaVerificacion || null,
         notifPush: Boolean(raw.notifPush),
-        backendUrl: raw.backendUrl || (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000'
-            : 'http://localhost:3000'), // Modificable por el usuario o producción
+        backendUrl: raw.backendUrl || (window.APP_CONFIG
+            ? window.APP_CONFIG.backendUrl          // Usa la resolución automática de config.js
+            : (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+                ? 'http://localhost:3000'
+                : 'https://moto-oil-tracker.onrender.com')),
     };
 }
 

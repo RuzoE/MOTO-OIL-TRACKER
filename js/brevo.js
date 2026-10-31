@@ -2,14 +2,26 @@
  * brevo.js — Cliente Frontend para el Servicio Centralizado de Brevo
  * Comunica el navegador con el backend seguro de Moto Oil Tracker.
  * NOTA DE SEGURIDAD: Este archivo NO contiene claves de API ni credenciales sensibles.
+ *
+ * La URL del backend se obtiene de APP_CONFIG (js/config.js), que selecciona
+ * automáticamente entre desarrollo local (localhost:3000) y producción (Render).
  */
 
 // ─── Configuración de la URL del Backend ──────────────────────────────────────
+/**
+ * Devuelve la URL base del backend activo.
+ * Prioridad: override en localStorage > APP_CONFIG (dev/prod automático)
+ */
 function obtenerBackendUrl() {
-    const config = window.Storage?.obtenerConfig() || {};
-    return config.backendUrl || (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+    // APP_CONFIG se carga desde js/config.js (debe incluirse antes en el HTML)
+    if (window.APP_CONFIG) {
+        return window.APP_CONFIG.backendUrl;
+    }
+    // Fallback de emergencia si config.js no cargó por algún motivo
+    const h = location.hostname;
+    return (h === 'localhost' || h === '127.0.0.1')
         ? 'http://localhost:3000'
-        : 'http://localhost:3000');
+        : 'https://moto-oil-tracker.onrender.com';
 }
 
 // ─── 1. Verificación del Estado del Servidor ──────────────────────────────────

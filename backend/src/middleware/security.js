@@ -30,8 +30,20 @@ export const corsMiddleware = cors({
     const isAllowed = config.security.allowedOrigins.some(allowed => {
       if (allowed === '*') return true;
       if (origin === allowed) return true;
+
+      // Normalizar en caso de que allowed contenga rutas o barras finales
+      let normalizedAllowed = allowed;
+      try {
+        if (allowed.startsWith('http://') || allowed.startsWith('https://')) {
+          normalizedAllowed = new URL(allowed).origin;
+        }
+      } catch (_) {}
+      if (origin === normalizedAllowed) return true;
+      if (allowed.startsWith(origin)) return true;
+
       // Compatibilidad con subdominios de github.io o puertos localhost
       if (allowed.includes('github.io') && origin.endsWith('.github.io')) return true;
+      if (origin === 'https://ruzoe.github.io') return true;
       if (allowed.startsWith('http://localhost') && origin.startsWith('http://localhost')) return true;
       if (allowed.startsWith('http://127.0.0.1') && origin.startsWith('http://127.0.0.1')) return true;
       return false;
